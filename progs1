@@ -1,0 +1,701 @@
+
+R version 4.2.2 (2022-10-31 ucrt) -- "Innocent and Trusting"
+Copyright (C) 2022 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> install.packages("caret")
+Installing package into ‘C:/Users/91756/AppData/Local/R/win-library/4.2’
+(as ‘lib’ is unspecified)
+--- Please select a CRAN mirror for use in this session ---
+Warning: failed to download mirrors file (cannot open URL 'https://cran.r-project.org/CRAN_mirrors.csv'); using local file 'C:/PROGRA~1/R/R-42~1.2/doc/CRAN_mirrors.csv'
+Warning: unable to access index for repository https://cran.pacha.dev/src/contrib:
+  cannot open URL 'https://cran.pacha.dev/src/contrib/PACKAGES'
+Warning: unable to access index for repository https://cran.pacha.dev/bin/windows/contrib/4.2:
+  cannot open URL 'https://cran.pacha.dev/bin/windows/contrib/4.2/PACKAGES'
+Warning messages:
+1: In download.file(url, destfile = f, quiet = TRUE) :
+  URL 'https://cran.r-project.org/CRAN_mirrors.csv': status was 'Couldn't resolve host name'
+2: package ‘caret’ is not available for this version of R
+
+A version of this package for your version of R might be available elsewhere,
+see the ideas at
+https://cran.r-project.org/doc/manuals/r-patched/R-admin.html#Installing-packages 
+> install.packages("caret")
+Installing package into ‘C:/Users/91756/AppData/Local/R/win-library/4.2’
+(as ‘lib’ is unspecified)
+Warning: unable to access index for repository https://cran.pacha.dev/src/contrib:
+  cannot open URL 'https://cran.pacha.dev/src/contrib/PACKAGES'
+Warning: unable to access index for repository https://cran.pacha.dev/bin/windows/contrib/4.2:
+  cannot open URL 'https://cran.pacha.dev/bin/windows/contrib/4.2/PACKAGES'
+Warning message:
+package ‘caret’ is not available for this version of R
+
+A version of this package for your version of R might be available elsewhere,
+see the ideas at
+https://cran.r-project.org/doc/manuals/r-patched/R-admin.html#Installing-packages 
+> #Creates vectors having data points
+> expected_value <- factor(c(1,0,1,0,1,1,1,0,0,1))
+> predicted_value <- factor(c(1,0,0,1,1,1,0,0,0,1))
+> 
+> #Creating confusion matrix
+> example <- confusionMatrix(data=predicted_value, reference = expected_value)
+Error in confusionMatrix(data = predicted_value, reference = expected_value) : 
+  could not find function "confusionMatrix"
+> 
+> #displaying result
+> example
+function (topic, package = NULL, lib.loc = NULL, character.only = FALSE, 
+    give.lines = FALSE, local = FALSE, type = c("console", "html"), 
+    echo = TRUE, verbose = getOption("verbose"), setRNG = FALSE, 
+    ask = getOption("example.ask"), prompt.prefix = abbreviate(topic, 
+        6), run.dontrun = FALSE, run.donttest = interactive()) 
+{
+    type <- match.arg(type)
+    html <- type == "html"
+    if (html) {
+        enhancedHTML <- str2logical(Sys.getenv("_R_HELP_ENABLE_ENHANCED_HTML_", 
+            "TRUE"))
+        if (!interactive() || !enhancedHTML || !requireNamespace("knitr", 
+            quietly = TRUE)) 
+            html <- FALSE
+    }
+    if (html) {
+        port <- tools::startDynamicHelp(NA)
+        if (port <= 0L) 
+            html <- FALSE
+        else {
+            if (!is.null(lib.loc)) 
+                lib.loc <- NULL
+            browser <- if (.Platform$GUI == "AQUA") {
+                get("aqua.browser", envir = as.environment("tools:RGUI"))
+            }
+            else getOption("browser")
+        }
+    }
+    if (!character.only) {
+        topic <- substitute(topic)
+        if (!is.character(topic)) 
+            topic <- deparse(topic)[1L]
+    }
+    pkgpaths <- find.package(package, lib.loc, verbose = verbose)
+    file <- index.search(topic, pkgpaths, firstOnly = TRUE)
+    if (!length(file)) {
+        warning(gettextf("no help found for %s", sQuote(topic)), 
+            domain = NA)
+        return(invisible())
+    }
+    if (verbose) 
+        cat("Found file =", sQuote(file), "\n")
+    packagePath <- dirname(dirname(file))
+    pkgname <- basename(packagePath)
+    if (html) {
+        query <- if (local) 
+            ""
+        else "?local=FALSE"
+        browseURL(paste0("http://127.0.0.1:", port, "/library/", 
+            pkgname, "/Example/", topic, query), browser)
+        return(invisible())
+    }
+    lib <- dirname(packagePath)
+    tf <- tempfile("Rex")
+    tools::Rd2ex(.getHelpFile(file), tf, commentDontrun = !run.dontrun, 
+        commentDonttest = !run.donttest)
+    if (!file.exists(tf)) {
+        if (give.lines) 
+            return(character())
+        warning(gettextf("%s has a help file but no examples", 
+            sQuote(topic)), domain = NA)
+        return(invisible())
+    }
+    on.exit(unlink(tf))
+    if (give.lines) 
+        return(readLines(tf))
+    if (pkgname != "base") 
+        library(pkgname, lib.loc = lib, character.only = TRUE)
+    if (!is.logical(setRNG) || setRNG) {
+        if ((exists(".Random.seed", envir = .GlobalEnv))) {
+            oldSeed <- get(".Random.seed", envir = .GlobalEnv)
+            on.exit(assign(".Random.seed", oldSeed, envir = .GlobalEnv), 
+                add = TRUE)
+        }
+        else {
+            oldRNG <- RNGkind()
+            on.exit(RNGkind(oldRNG[1L], oldRNG[2L], oldRNG[3L]), 
+                add = TRUE)
+        }
+        if (is.logical(setRNG)) {
+            RNGkind("default", "default", "default")
+            set.seed(1)
+        }
+        else eval(setRNG)
+    }
+    zz <- readLines(tf, n = 1L)
+    skips <- 0L
+    if (echo) {
+        zcon <- file(tf, open = "rt")
+        while (length(zz) && !length(grep("^### \\*\\*", zz))) {
+            skips <- skips + 1L
+            zz <- readLines(zcon, n = 1L)
+        }
+        close(zcon)
+    }
+    if (ask == "default") 
+        ask <- echo && grDevices::dev.interactive(orNone = TRUE)
+    if (ask) {
+        if (.Device != "null device") {
+            oldask <- grDevices::devAskNewPage(ask = TRUE)
+            if (!oldask) 
+                on.exit(grDevices::devAskNewPage(oldask), add = TRUE)
+        }
+        op <- options(device.ask.default = TRUE)
+        on.exit(options(op), add = TRUE)
+    }
+    source(tf, local, echo = echo, prompt.echo = paste0(prompt.prefix, 
+        getOption("prompt")), continue.echo = paste0(prompt.prefix, 
+        getOption("continue")), verbose = verbose, max.deparse.length = Inf, 
+        encoding = "UTF-8", skip.echo = skips, keep.source = TRUE)
+}
+<bytecode: 0x000001d7c8a55408>
+<environment: namespace:utils>
+> #Creates vectors having data points
+> expected_value <- factor(c(1,0,1,0,1,1,1,0,0,1))
+> predicted_value <- factor(c(1,0,0,1,1,1,0,0,0,1))
+> 
+> #Creating confusion matrix
+> example <- confusionMatrix(data=predicted_value, reference = expected_value)
+Error in confusionMatrix(data = predicted_value, reference = expected_value) : 
+  could not find function "confusionMatrix"
+> example
+function (topic, package = NULL, lib.loc = NULL, character.only = FALSE, 
+    give.lines = FALSE, local = FALSE, type = c("console", "html"), 
+    echo = TRUE, verbose = getOption("verbose"), setRNG = FALSE, 
+    ask = getOption("example.ask"), prompt.prefix = abbreviate(topic, 
+        6), run.dontrun = FALSE, run.donttest = interactive()) 
+{
+    type <- match.arg(type)
+    html <- type == "html"
+    if (html) {
+        enhancedHTML <- str2logical(Sys.getenv("_R_HELP_ENABLE_ENHANCED_HTML_", 
+            "TRUE"))
+        if (!interactive() || !enhancedHTML || !requireNamespace("knitr", 
+            quietly = TRUE)) 
+            html <- FALSE
+    }
+    if (html) {
+        port <- tools::startDynamicHelp(NA)
+        if (port <= 0L) 
+            html <- FALSE
+        else {
+            if (!is.null(lib.loc)) 
+                lib.loc <- NULL
+            browser <- if (.Platform$GUI == "AQUA") {
+                get("aqua.browser", envir = as.environment("tools:RGUI"))
+            }
+            else getOption("browser")
+        }
+    }
+    if (!character.only) {
+        topic <- substitute(topic)
+        if (!is.character(topic)) 
+            topic <- deparse(topic)[1L]
+    }
+    pkgpaths <- find.package(package, lib.loc, verbose = verbose)
+    file <- index.search(topic, pkgpaths, firstOnly = TRUE)
+    if (!length(file)) {
+        warning(gettextf("no help found for %s", sQuote(topic)), 
+            domain = NA)
+        return(invisible())
+    }
+    if (verbose) 
+        cat("Found file =", sQuote(file), "\n")
+    packagePath <- dirname(dirname(file))
+    pkgname <- basename(packagePath)
+    if (html) {
+        query <- if (local) 
+            ""
+        else "?local=FALSE"
+        browseURL(paste0("http://127.0.0.1:", port, "/library/", 
+            pkgname, "/Example/", topic, query), browser)
+        return(invisible())
+    }
+    lib <- dirname(packagePath)
+    tf <- tempfile("Rex")
+    tools::Rd2ex(.getHelpFile(file), tf, commentDontrun = !run.dontrun, 
+        commentDonttest = !run.donttest)
+    if (!file.exists(tf)) {
+        if (give.lines) 
+            return(character())
+        warning(gettextf("%s has a help file but no examples", 
+            sQuote(topic)), domain = NA)
+        return(invisible())
+    }
+    on.exit(unlink(tf))
+    if (give.lines) 
+        return(readLines(tf))
+    if (pkgname != "base") 
+        library(pkgname, lib.loc = lib, character.only = TRUE)
+    if (!is.logical(setRNG) || setRNG) {
+        if ((exists(".Random.seed", envir = .GlobalEnv))) {
+            oldSeed <- get(".Random.seed", envir = .GlobalEnv)
+            on.exit(assign(".Random.seed", oldSeed, envir = .GlobalEnv), 
+                add = TRUE)
+        }
+        else {
+            oldRNG <- RNGkind()
+            on.exit(RNGkind(oldRNG[1L], oldRNG[2L], oldRNG[3L]), 
+                add = TRUE)
+        }
+        if (is.logical(setRNG)) {
+            RNGkind("default", "default", "default")
+            set.seed(1)
+        }
+        else eval(setRNG)
+    }
+    zz <- readLines(tf, n = 1L)
+    skips <- 0L
+    if (echo) {
+        zcon <- file(tf, open = "rt")
+        while (length(zz) && !length(grep("^### \\*\\*", zz))) {
+            skips <- skips + 1L
+            zz <- readLines(zcon, n = 1L)
+        }
+        close(zcon)
+    }
+    if (ask == "default") 
+        ask <- echo && grDevices::dev.interactive(orNone = TRUE)
+    if (ask) {
+        if (.Device != "null device") {
+            oldask <- grDevices::devAskNewPage(ask = TRUE)
+            if (!oldask) 
+                on.exit(grDevices::devAskNewPage(oldask), add = TRUE)
+        }
+        op <- options(device.ask.default = TRUE)
+        on.exit(options(op), add = TRUE)
+    }
+    source(tf, local, echo = echo, prompt.echo = paste0(prompt.prefix, 
+        getOption("prompt")), continue.echo = paste0(prompt.prefix, 
+        getOption("continue")), verbose = verbose, max.deparse.length = Inf, 
+        encoding = "UTF-8", skip.echo = skips, keep.source = TRUE)
+}
+<bytecode: 0x000001d7c8a55408>
+<environment: namespace:utils>
+> #Creates vectors having data points
+> expected_value <- factor(c(1,0,1,0,1,1,1,0,0,1))
+> predicted_value <- factor(c(1,0,0,1,1,1,0,0,0,1))
+> #Creating confusion matrix
+> example <- confusionMatrix(data=predicted_value, reference = expected_value)
+Error in confusionMatrix(data = predicted_value, reference = expected_value) : 
+  could not find function "confusionMatrix"
+> example
+function (topic, package = NULL, lib.loc = NULL, character.only = FALSE, 
+    give.lines = FALSE, local = FALSE, type = c("console", "html"), 
+    echo = TRUE, verbose = getOption("verbose"), setRNG = FALSE, 
+    ask = getOption("example.ask"), prompt.prefix = abbreviate(topic, 
+        6), run.dontrun = FALSE, run.donttest = interactive()) 
+{
+    type <- match.arg(type)
+    html <- type == "html"
+    if (html) {
+        enhancedHTML <- str2logical(Sys.getenv("_R_HELP_ENABLE_ENHANCED_HTML_", 
+            "TRUE"))
+        if (!interactive() || !enhancedHTML || !requireNamespace("knitr", 
+            quietly = TRUE)) 
+            html <- FALSE
+    }
+    if (html) {
+        port <- tools::startDynamicHelp(NA)
+        if (port <= 0L) 
+            html <- FALSE
+        else {
+            if (!is.null(lib.loc)) 
+                lib.loc <- NULL
+            browser <- if (.Platform$GUI == "AQUA") {
+                get("aqua.browser", envir = as.environment("tools:RGUI"))
+            }
+            else getOption("browser")
+        }
+    }
+    if (!character.only) {
+        topic <- substitute(topic)
+        if (!is.character(topic)) 
+            topic <- deparse(topic)[1L]
+    }
+    pkgpaths <- find.package(package, lib.loc, verbose = verbose)
+    file <- index.search(topic, pkgpaths, firstOnly = TRUE)
+    if (!length(file)) {
+        warning(gettextf("no help found for %s", sQuote(topic)), 
+            domain = NA)
+        return(invisible())
+    }
+    if (verbose) 
+        cat("Found file =", sQuote(file), "\n")
+    packagePath <- dirname(dirname(file))
+    pkgname <- basename(packagePath)
+    if (html) {
+        query <- if (local) 
+            ""
+        else "?local=FALSE"
+        browseURL(paste0("http://127.0.0.1:", port, "/library/", 
+            pkgname, "/Example/", topic, query), browser)
+        return(invisible())
+    }
+    lib <- dirname(packagePath)
+    tf <- tempfile("Rex")
+    tools::Rd2ex(.getHelpFile(file), tf, commentDontrun = !run.dontrun, 
+        commentDonttest = !run.donttest)
+    if (!file.exists(tf)) {
+        if (give.lines) 
+            return(character())
+        warning(gettextf("%s has a help file but no examples", 
+            sQuote(topic)), domain = NA)
+        return(invisible())
+    }
+    on.exit(unlink(tf))
+    if (give.lines) 
+        return(readLines(tf))
+    if (pkgname != "base") 
+        library(pkgname, lib.loc = lib, character.only = TRUE)
+    if (!is.logical(setRNG) || setRNG) {
+        if ((exists(".Random.seed", envir = .GlobalEnv))) {
+            oldSeed <- get(".Random.seed", envir = .GlobalEnv)
+            on.exit(assign(".Random.seed", oldSeed, envir = .GlobalEnv), 
+                add = TRUE)
+        }
+        else {
+            oldRNG <- RNGkind()
+            on.exit(RNGkind(oldRNG[1L], oldRNG[2L], oldRNG[3L]), 
+                add = TRUE)
+        }
+        if (is.logical(setRNG)) {
+            RNGkind("default", "default", "default")
+            set.seed(1)
+        }
+        else eval(setRNG)
+    }
+    zz <- readLines(tf, n = 1L)
+    skips <- 0L
+    if (echo) {
+        zcon <- file(tf, open = "rt")
+        while (length(zz) && !length(grep("^### \\*\\*", zz))) {
+            skips <- skips + 1L
+            zz <- readLines(zcon, n = 1L)
+        }
+        close(zcon)
+    }
+    if (ask == "default") 
+        ask <- echo && grDevices::dev.interactive(orNone = TRUE)
+    if (ask) {
+        if (.Device != "null device") {
+            oldask <- grDevices::devAskNewPage(ask = TRUE)
+            if (!oldask) 
+                on.exit(grDevices::devAskNewPage(oldask), add = TRUE)
+        }
+        op <- options(device.ask.default = TRUE)
+        on.exit(options(op), add = TRUE)
+    }
+    source(tf, local, echo = echo, prompt.echo = paste0(prompt.prefix, 
+        getOption("prompt")), continue.echo = paste0(prompt.prefix, 
+        getOption("continue")), verbose = verbose, max.deparse.length = Inf, 
+        encoding = "UTF-8", skip.echo = skips, keep.source = TRUE)
+}
+<bytecode: 0x000001d7c8a55408>
+<environment: namespace:utils>
+> #Creates vectors having data points
+> expected_value <- factor(c(1,0,1,0,1,1,1,0,0,1))
+> predicted_value <- factor(c(1,0,0,1,1,1,0,0,0,1))
+> 
+> #Creating confusion matrix
+> example <- confusionMatrix(data=predicted_value, reference = expected_value)
+Error in confusionMatrix(data = predicted_value, reference = expected_value) : 
+  could not find function "confusionMatrix"
+> 
+> #displaying result
+> example
+function (topic, package = NULL, lib.loc = NULL, character.only = FALSE, 
+    give.lines = FALSE, local = FALSE, type = c("console", "html"), 
+    echo = TRUE, verbose = getOption("verbose"), setRNG = FALSE, 
+    ask = getOption("example.ask"), prompt.prefix = abbreviate(topic, 
+        6), run.dontrun = FALSE, run.donttest = interactive()) 
+{
+    type <- match.arg(type)
+    html <- type == "html"
+    if (html) {
+        enhancedHTML <- str2logical(Sys.getenv("_R_HELP_ENABLE_ENHANCED_HTML_", 
+            "TRUE"))
+        if (!interactive() || !enhancedHTML || !requireNamespace("knitr", 
+            quietly = TRUE)) 
+            html <- FALSE
+    }
+    if (html) {
+        port <- tools::startDynamicHelp(NA)
+        if (port <= 0L) 
+            html <- FALSE
+        else {
+            if (!is.null(lib.loc)) 
+                lib.loc <- NULL
+            browser <- if (.Platform$GUI == "AQUA") {
+                get("aqua.browser", envir = as.environment("tools:RGUI"))
+            }
+            else getOption("browser")
+        }
+    }
+    if (!character.only) {
+        topic <- substitute(topic)
+        if (!is.character(topic)) 
+            topic <- deparse(topic)[1L]
+    }
+    pkgpaths <- find.package(package, lib.loc, verbose = verbose)
+    file <- index.search(topic, pkgpaths, firstOnly = TRUE)
+    if (!length(file)) {
+        warning(gettextf("no help found for %s", sQuote(topic)), 
+            domain = NA)
+        return(invisible())
+    }
+    if (verbose) 
+        cat("Found file =", sQuote(file), "\n")
+    packagePath <- dirname(dirname(file))
+    pkgname <- basename(packagePath)
+    if (html) {
+        query <- if (local) 
+            ""
+        else "?local=FALSE"
+        browseURL(paste0("http://127.0.0.1:", port, "/library/", 
+            pkgname, "/Example/", topic, query), browser)
+        return(invisible())
+    }
+    lib <- dirname(packagePath)
+    tf <- tempfile("Rex")
+    tools::Rd2ex(.getHelpFile(file), tf, commentDontrun = !run.dontrun, 
+        commentDonttest = !run.donttest)
+    if (!file.exists(tf)) {
+        if (give.lines) 
+            return(character())
+        warning(gettextf("%s has a help file but no examples", 
+            sQuote(topic)), domain = NA)
+        return(invisible())
+    }
+    on.exit(unlink(tf))
+    if (give.lines) 
+        return(readLines(tf))
+    if (pkgname != "base") 
+        library(pkgname, lib.loc = lib, character.only = TRUE)
+    if (!is.logical(setRNG) || setRNG) {
+        if ((exists(".Random.seed", envir = .GlobalEnv))) {
+            oldSeed <- get(".Random.seed", envir = .GlobalEnv)
+            on.exit(assign(".Random.seed", oldSeed, envir = .GlobalEnv), 
+                add = TRUE)
+        }
+        else {
+            oldRNG <- RNGkind()
+            on.exit(RNGkind(oldRNG[1L], oldRNG[2L], oldRNG[3L]), 
+                add = TRUE)
+        }
+        if (is.logical(setRNG)) {
+            RNGkind("default", "default", "default")
+            set.seed(1)
+        }
+        else eval(setRNG)
+    }
+    zz <- readLines(tf, n = 1L)
+    skips <- 0L
+    if (echo) {
+        zcon <- file(tf, open = "rt")
+        while (length(zz) && !length(grep("^### \\*\\*", zz))) {
+            skips <- skips + 1L
+            zz <- readLines(zcon, n = 1L)
+        }
+        close(zcon)
+    }
+    if (ask == "default") 
+        ask <- echo && grDevices::dev.interactive(orNone = TRUE)
+    if (ask) {
+        if (.Device != "null device") {
+            oldask <- grDevices::devAskNewPage(ask = TRUE)
+            if (!oldask) 
+                on.exit(grDevices::devAskNewPage(oldask), add = TRUE)
+        }
+        op <- options(device.ask.default = TRUE)
+        on.exit(options(op), add = TRUE)
+    }
+    source(tf, local, echo = echo, prompt.echo = paste0(prompt.prefix, 
+        getOption("prompt")), continue.echo = paste0(prompt.prefix, 
+        getOption("continue")), verbose = verbose, max.deparse.length = Inf, 
+        encoding = "UTF-8", skip.echo = skips, keep.source = TRUE)
+}
+<bytecode: 0x000001d7c8a55408>
+<environment: namespace:utils>
+> install.packages('caret')
+Installing package into ‘C:/Users/91756/AppData/Local/R/win-library/4.2’
+(as ‘lib’ is unspecified)
+Warning: unable to access index for repository https://cran.pacha.dev/src/contrib:
+  cannot open URL 'https://cran.pacha.dev/src/contrib/PACKAGES'
+Warning: unable to access index for repository https://cran.pacha.dev/bin/windows/contrib/4.2:
+  cannot open URL 'https://cran.pacha.dev/bin/windows/contrib/4.2/PACKAGES'
+Warning message:
+package ‘caret’ is not available for this version of R
+
+A version of this package for your version of R might be available elsewhere,
+see the ideas at
+https://cran.r-project.org/doc/manuals/r-patched/R-admin.html#Installing-packages 
+> 
+> #Import required library
+> library(caret)
+Loading required package: ggplot2
+Loading required package: lattice
+> 
+> #Creates vectors having data points
+> expected_value <- factor(c(1,0,1,0,1,1,1,0,0,1))
+> predicted_value <- factor(c(1,0,0,1,1,1,0,0,0,1))
+> 
+> #Creating confusion matrix
+> example <- confusionMatrix(data=predicted_value, reference = expected_value)
+> 
+> #displaying result
+> example
+Confusion Matrix and Statistics
+
+          Reference
+Prediction 0 1
+         0 3 2
+         1 1 4
+                                          
+               Accuracy : 0.7             
+                 95% CI : (0.3475, 0.9333)
+    No Information Rate : 0.6             
+    P-Value [Acc > NIR] : 0.3823          
+                                          
+                  Kappa : 0.4             
+                                          
+ Mcnemar's Test P-Value : 1.0000          
+                                          
+            Sensitivity : 0.7500          
+            Specificity : 0.6667          
+         Pos Pred Value : 0.6000          
+         Neg Pred Value : 0.8000          
+             Prevalence : 0.4000          
+         Detection Rate : 0.3000          
+   Detection Prevalence : 0.5000          
+      Balanced Accuracy : 0.7083          
+                                          
+       'Positive' Class : 0               
+                                          
+> 
+> library(tools)
+> library(HSAUR)
+Error in library(HSAUR) : there is no package called ‘HSAUR’
+> library(hsaur)
+Error in library(hsaur) : there is no package called ‘hsaur’
+> view(water)
+Error in view(water) : could not find function "view"
+> library(tools)
+> library(HSAUR)library
+Error: unexpected symbol in "library(HSAUR)library"
+> view(water)
+Error in view(water) : could not find function "view"
+> s<-data.frame(water$mortality,water$hardness)
+Error in data.frame(water$mortality, water$hardness) : 
+  object 'water' not found
+> view(s)
+Error in view(s) : could not find function "view"
+> table(s)
+Error in table(s) : object 's' not found
+> head(s)
+Error in head(s) : object 's' not found
+> plot(s)
+Error in plot(s) : object 's' not found
+> install.packages("tools")
+Warning: package ‘tools’ is in use and will not be installed
+> install.packages("HSAUR")
+Installing package into ‘C:/Users/91756/AppData/Local/R/win-library/4.2’
+(as ‘lib’ is unspecified)
+Warning: unable to access index for repository https://cran.pacha.dev/src/contrib:
+  cannot open URL 'https://cran.pacha.dev/src/contrib/PACKAGES'
+Warning: unable to access index for repository https://cran.pacha.dev/bin/windows/contrib/4.2:
+  cannot open URL 'https://cran.pacha.dev/bin/windows/contrib/4.2/PACKAGES'
+Warning message:
+package ‘HSAUR’ is not available for this version of R
+
+A version of this package for your version of R might be available elsewhere,
+see the ideas at
+https://cran.r-project.org/doc/manuals/r-patched/R-admin.html#Installing-packages 
+> library(tools)
+> library(HSAUR)library
+Error: unexpected symbol in "library(HSAUR)library"
+> view(water)
+Error in view(water) : could not find function "view"
+> s<-data.frame(water$mortality,water$hardness)
+Error in data.frame(water$mortality, water$hardness) : 
+  object 'water' not found
+> view(s)
+Error in view(s) : could not find function "view"
+> table(s)
+Error in table(s) : object 's' not found
+> head(s)
+Error in head(s) : object 's' not found
+> plot(s)install.
+Error: unexpected symbol in "plot(s)install."
+> library(tools)
+> library(HSAUR)library
+Error: unexpected symbol in "library(HSAUR)library"
+> view(water)
+Error in view(water) : could not find function "view"
+> s<-data.frame(water$mortality,water$hardness)
+Error in data.frame(water$mortality, water$hardness) : 
+  object 'water' not found
+> view(s)
+Error in view(s) : could not find function "view"
+> table(s)
+Error in table(s) : object 's' not found
+> head(s)
+Error in head(s) : object 's' not found
+> plot(s)
+Error in plot(s) : object 's' not found
+> s<-data.frame(water$mortality,water$hardness)
+Error in data.frame(water$mortality, water$hardness) : 
+  object 'water' not found
+> view(s)
+Error in view(s) : could not find function "view"
+> table(s)
+Error in table(s) : object 's' not found
+> head(s)
+Error in head(s) : object 's' not found
+> plot(s)
+Error in plot(s) : object 's' not found
+> c<-data.frame(water$mortality,water$hardness)
+Error in data.frame(water$mortality, water$hardness) : 
+  object 'water' not found
+> view(c)
+Error in view(c) : could not find function "view"
+> table(c)
+Error in unique.default(x, nmax = nmax) : 
+  unique() applies only to vectors
+> head(c)
+                 
+1 .Primitive("c")
+> plot(c)
+> view(c)
+Error in view(c) : could not find function "view"
+> table(c)
+Error in unique.default(x, nmax = nmax) : 
+  unique() applies only to vectors
+> head(c)
+                 
+1 .Primitive("c")
+> plot(c)
+> 
